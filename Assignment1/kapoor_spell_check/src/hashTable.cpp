@@ -41,7 +41,7 @@ bool hashTable::contains(const std::string &key)
 void *hashTable::getPointer(const std::string &key, bool *b)
 {
     int pos = findPos(key); // Find the position of the key
-    if (pos != -1) // If the key is found and b is not null, set b to true
+    if (pos != -1)          // If the key is found and b is not null, set b to true
     {
         if (b != nullptr)
         {
@@ -49,7 +49,7 @@ void *hashTable::getPointer(const std::string &key, bool *b)
         }
         return data[pos].pv; // Return the pointer to the key
     }
-    if (b != nullptr)  // If the key is not found and b is not null, set b to false
+    if (b != nullptr) // If the key is not found and b is not null, set b to false
     {
         *b = false;
     }
@@ -69,7 +69,7 @@ int hashTable::setPointer(const std::string &key, void *pv)
 
 bool hashTable::remove(const std::string &key)
 {
-    int pos = findPos(key); 
+    int pos = findPos(key);
     if (pos != -1) // If the key is found, set isDeleted to true and return true
     {
         data[pos].isDeleted = true;

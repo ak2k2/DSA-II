@@ -18,11 +18,21 @@ void checkWord(std::string word, int lineNumber, hashTable &ht, std::ofstream &o
     std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 
     int maxWordLength = 20; // Maximum length of a valid word
+
     if (word.length() > maxWordLength)
     {
         outputFile << "Long word at line " << lineNumber << ", starts: " << word.substr(0, maxWordLength) << std::endl;
+        return; // Return early; no need to spell-check long words
     }
-    else if (!ht.contains(word)) // Check if the word is in the dictionary
+
+    // Ignore words that contain digits, hyphens, or apostrophes
+    if (std::any_of(word.begin(), word.end(), [](char ch)
+                    { return std::isdigit(ch) || ch == '-' || ch == '\''; }))
+    {
+        return;
+    }
+
+    if (!ht.contains(word)) // Check if the word is in the dictionary
     {
         outputFile << "Unknown word at line " << lineNumber << ": " << word << std::endl;
     }
@@ -38,11 +48,6 @@ int main()
     std::cin >> inputFile;
     std::cout << "Enter the name of the output file: ";
     std::cin >> outputFile;
-
-    // Prepend the directory path
-    dictionaryFile = "./data/" + dictionaryFile;
-    inputFile = "./data/" + inputFile;
-    outputFile = "./data/" + outputFile;
 
     hashTable ht(25000); // Initialize a hash table with 25000 buckets
 
@@ -79,7 +84,7 @@ int main()
             {
                 if (!temp.empty()) // If the temporary string is not empty, check the word
                 {
-                    checkWord(temp, lineNumber, ht, outStream); 
+                    checkWord(temp, lineNumber, ht, outStream);
                     temp.clear(); // Clear the temporary string
                 }
             }
