@@ -53,7 +53,6 @@ int heap::setKey(const std::string &id, int key)
     return 0;
 }
 
-// deleteMin method
 int heap::deleteMin(std::string *pId, int *pKey, void *ppData)
 {
     if (currentSize == 0)
@@ -72,20 +71,19 @@ int heap::deleteMin(std::string *pId, int *pKey, void *ppData)
     {
         *(static_cast<void **>(ppData)) = data[1].pData;
     }
-    mapping.remove(data[1].id);
+    mapping.remove(data[1].id); // Ensuring the item is removed from the mapping
     data[1] = data[currentSize--];
-    percolateDown(1);
+    percolateDown(1); // Ensure heap integrity after deletion
     return 0;
 }
 
-// remove method
 int heap::remove(const std::string &id, int *pKey, void *ppData)
 {
     bool b;
     node *pn = static_cast<node *>(mapping.getPointer(id, &b));
     if (!b)
     {
-        return 1; // id does not exist
+        return 1; // id does not exist in the mapping
     }
     int pos = getPos(pn);
     if (pKey != nullptr)
@@ -97,14 +95,20 @@ int heap::remove(const std::string &id, int *pKey, void *ppData)
         *(static_cast<void **>(ppData)) = data[pos].pData;
     }
     data[pos] = data[currentSize--];
-    mapping.remove(id);
-    if (data[pos].key < data[pos / 2].key)
-    {
-        percolateUp(pos);
-    }
-    else
-    {
-        percolateDown(pos);
+    mapping.remove(id); // Ensure the item is removed from the mapping
+
+    // No need to mark the node as deleted using pn->key = -1;
+
+    if (pos <= currentSize)
+    { // Check if we're not outside the range after decreasing currentSize
+        if (pos > 1 && data[pos].key < data[pos / 2].key)
+        {
+            percolateUp(pos);
+        }
+        else
+        {
+            percolateDown(pos);
+        }
     }
     return 0;
 }

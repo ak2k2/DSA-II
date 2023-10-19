@@ -1,3 +1,6 @@
+# Compiler flags
+CXXFLAGS = -Wall -std=c++11
+
 useHeap.exe: useHeap.o heap.o hash.o
 	g++ -o useHeap.exe useHeap.o heap.o hash.o
 

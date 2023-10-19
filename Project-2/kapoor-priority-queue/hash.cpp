@@ -40,20 +40,20 @@ bool hashTable::contains(const std::string &key)
 
 void *hashTable::getPointer(const std::string &key, bool *b)
 {
-    int pos = findPos(key); // Find the position of the key
-    if (pos != -1)          // If the key is found and b is not null, set b to true
+    int pos = findPos(key);
+    if (pos != -1 && data[pos].isOccupied && !data[pos].isDeleted) // Check for occupation and ensure it's not deleted
     {
         if (b != nullptr)
         {
             *b = true;
         }
-        return data[pos].pv; // Return the pointer to the key
+        return data[pos].pv;
     }
-    if (b != nullptr) // If the key is not found and b is not null, set b to false
+    if (b != nullptr)
     {
         *b = false;
     }
-    return nullptr; // Return nullptr if the key is not found
+    return nullptr;
 }
 
 int hashTable::setPointer(const std::string &key, void *pv)
@@ -70,12 +70,13 @@ int hashTable::setPointer(const std::string &key, void *pv)
 bool hashTable::remove(const std::string &key)
 {
     int pos = findPos(key);
-    if (pos != -1) // If the key is found, set isDeleted to true and return true
+    if (pos != -1 && data[pos].isOccupied && !data[pos].isDeleted) // Ensure the key is present and not already deleted
     {
-        data[pos].isDeleted = true;
+        data[pos].isDeleted = true;   // Mark as deleted
+        data[pos].isOccupied = false; // Mark as unoccupied
         return true;
     }
-    return false;
+    return false; // Return false if the key is not found or already deleted
 }
 
 int hashTable::hash(const std::string &key)
@@ -97,9 +98,11 @@ int hashTable::findPos(const std::string &key)
 {
     int offset = 1;
     int currentPos = hash(key);
-    // While the current position is occupied and the key is not found
-    while (data[currentPos].isOccupied &&
-           data[currentPos].key != key)
+
+    // While the current position is occupied and the key doesn't match,
+    // or the item at the current position is deleted and the key doesn't match.
+    while ((data[currentPos].isOccupied && data[currentPos].key != key) ||
+           (data[currentPos].isDeleted && data[currentPos].key != key))
     {
         currentPos += offset; // Compute ith probe
         offset += 2;          // Use quadratic probing
