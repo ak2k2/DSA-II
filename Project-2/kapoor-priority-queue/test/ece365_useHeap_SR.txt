@@ -193,7 +193,6 @@ Enter an associated integer key: 60
 
 Call to 'setKey' returned: 0
 
-
 Options:
 1 - Insert a new item into the binary heap
 2 - Set the key of a specified item

@@ -1,26 +1,36 @@
-# Compiler flags
-CXXFLAGS = -Wall -std=c++11
+CXX = g++
+CXXFLAGS = -Iinclude -Wall
+OBJDIR = build
+SRCDIR = src
+BINDIR = bin
+SOURCES = $(wildcard $(SRCDIR)/*.cpp)
+OBJECTS = $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
-useHeap.exe: useHeap.o heap.o hash.o
-	g++ -o useHeap.exe useHeap.o heap.o hash.o
+# Create the bin directory if it doesn't exist
+$(shell mkdir -p $(BINDIR))
 
-useHeap.o: useHeap.cpp
-	g++ -c useHeap.cpp
+all: $(BINDIR)/useHeap.exe
 
-heap.o: heap.cpp heap.h
-	g++ -c heap.cpp
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-hash.o: hash.cpp hash.h
-	g++ -c hash.cpp
+$(BINDIR)/useHeap.exe: $(OBJECTS)
+	$(CXX) $^ -o $@
 
-debug:
-	g++ -g -o useHeapDebug.exe useHeap.cpp heap.cpp hash.cpp
+debug: CXXFLAGS += -g
+debug: $(BINDIR)/useHeapDebug.exe
+
+$(BINDIR)/useHeapDebug.exe: $(OBJECTS)
+	$(CXX) $^ -o $@
+
+.PHONY: clean backup
 
 clean:
-	rm -f *.exe *.o *.stackdump *~
+	rm -f $(OBJDIR)/*.o
+	rm -f $(BINDIR)/*
 
 backup:
 	test -d backups || mkdir backups
-	cp *.cpp backups
-	cp *.h backups
+	cp $(SRCDIR)/*.cpp backups
+	cp $(INCLUDE)/*.h backups
 	cp Makefile backups

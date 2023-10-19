@@ -19,16 +19,16 @@ private:
     {
     public:
         std::string key;
-        void *pv;        // pointer associated with key
-        bool isOccupied; // if the item is occupied
-        bool isDeleted;  // if the item is deleted
+        void *pv;
+        bool isOccupied;
+        bool isDeleted;
 
         hashItem() : pv(nullptr), isOccupied(false), isDeleted(false) {}
     };
 
-    int capacity;               // The current capacity of the hash table.
-    int filled;                 // Number of occupied items in the table.
-    std::vector<hashItem> data; // The actual entries are here.
+    int capacity;
+    int filled;
+    std::vector<hashItem> data;
 
     int hash(const std::string &key);
     int findPos(const std::string &key);

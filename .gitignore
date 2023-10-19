@@ -1,5 +1,19 @@
-# vscode
-.vscode
+# Ignore the build directory
+build/
 
-# mac
-**/.DS_Store
+# Ignore the bin directory
+bin/
+
+# Ignore all .o files, in case they end up outside of the build directory
+*.o
+
+# Ignore macOS system files
+.DS_Store
+
+# Visual Studio Code
+.vscode/
+
+# CMake
+CMakeFiles/
+cmake-build-debug/
+CMakeCache.txt

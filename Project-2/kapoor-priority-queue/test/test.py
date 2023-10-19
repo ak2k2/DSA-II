@@ -1,56 +1,42 @@
 import difflib
-import subprocess
-import sys
-
 import pexpect
 
 
-def print_diff(s1: str, s2: str):
-    # diff with colors
+def print_diff(s1, s2):
     for line in difflib.unified_diff(s1.splitlines(), s2.splitlines(), lineterm=""):
-        if line.startswith("+"):
-            print("\033[92m" + line + "\033[0m")
-        elif line.startswith("-"):
-            print("\033[91m" + line + "\033[0m")
-        else:
-            print(line)
+        color = (
+            "\033[92m"
+            if line.startswith("+")
+            else "\033[91m"
+            if line.startswith("-")
+            else "\033[0m"
+        )
+        print(f"{color}{line}\033[0m")
 
 
 def run_useHeap(input_data):
-    # Start the child process
-    child = pexpect.spawn("./useHeap.exe")
+    child = pexpect.spawn("./bin/useHeap.exe")
+    output = ""
 
-    # String to capture the output
-    program_output = ""
-
-    # Interact with the process
     for line in input_data:
-        child.expect(
-            ".*:"
-        )  # This regex should be adjusted based on the expected prompts of your program
-        program_output += (
-            child.before.decode() + child.after.decode()
-        )  # Capture the output
+        child.expect(".*:")
+        output += child.before.decode() + child.after.decode()
         child.sendline(line)
 
-    # The child should terminate after all inputs are sent and it's done processing
     child.expect(pexpect.EOF)
-    program_output += (
-        child.before.decode()
-    )  # Capture any remaining output after the last input
+    output += child.before.decode()
 
-    return (
-        program_output.strip()
-    )  # Return the captured output, stripping any leading/trailing whitespace
+    return "$ ./useHeap.exe\n" + output.strip()
 
 
-with open("ece365_useHeap_SR.txt", "r") as f:
+with open("test/ece365_useHeap_SR.txt", "r") as f:
     expected_output = f.read()
+
 
 # test case 1: ece365_useHeap_SR.txt
 input_data = [
-    "500",  # capacity
-    "1",  # option: Insert a new item
+    "100",  # capacity
+    "1",  # option: Insert a new itema
     "string one",  # string to insert
     "35",  # associated integer key
     "1",  # option: Insert a new item
@@ -94,9 +80,5 @@ input_data = [
     "5",  # option: Quit
 ]
 
-
 result = run_useHeap(input_data)
-
-# print(result)
-
 print_diff(expected_output, result)
