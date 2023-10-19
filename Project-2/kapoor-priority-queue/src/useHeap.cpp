@@ -42,7 +42,7 @@ int main()
 	int capacity = 0;
 	int option;
 	string stringTmp;
-	int key, id;
+	int key;
 	int retVal;
 
 	// Have user choose capacity for binary heap
