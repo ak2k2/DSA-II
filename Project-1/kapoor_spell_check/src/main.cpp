@@ -65,7 +65,7 @@ int main()
         std::cerr << "Could not open " << inputFile << std::endl;
         return 1;
     }
-
+    
     std::string line;
     int lineNumber = 0;
     std::string temp;

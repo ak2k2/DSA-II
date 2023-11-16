@@ -2,3 +2,4 @@
 
 ## To Run:
 1. `$ make clean all'
+1. '$bin/./graphApp.exe'

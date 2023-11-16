@@ -21,6 +21,12 @@ Graph::~Graph()
     delete priorityQueue;
 }
 
+// For input verification
+bool Graph::hasVertex(const std::string &id)
+{
+    return nodeTable->contains(id);
+}
+
 // Load graph from file
 int Graph::loadFromFile(const std::string &filename)
 {
@@ -153,10 +159,9 @@ void Graph::outputPath(std::ofstream &outFile, Node *node)
         outFile << "]\n";
     }
 }
-
 int main()
 {
-    Graph myGraph(100); // Initialize graph with capacity of 100, or any other appropriate number
+    Graph myGraph(10000000); // Initialize graph with capacity of 10_000_000 (10 million)
 
     std::string graphFilename, startVertexId, outputFilename;
     std::cout << "Enter name of graph file: ";
@@ -167,8 +172,22 @@ int main()
         return 1;
     }
 
-    std::cout << "Enter name of starting vertex: ";
-    std::cin >> startVertexId;
+    bool validStartVertex = false;
+    while (!validStartVertex)
+    {
+        std::cout << "Enter name of starting vertex: ";
+        std::cin >> startVertexId;
+
+        // Check if the vertex exists in the graph
+        if (myGraph.hasVertex(startVertexId))
+        {
+            validStartVertex = true;
+        }
+        else
+        {
+            std::cout << "Vertex does not exist. Please try again." << std::endl;
+        }
+    }
 
     clock_t startTime = clock();
     myGraph.applyDijkstra(startVertexId);

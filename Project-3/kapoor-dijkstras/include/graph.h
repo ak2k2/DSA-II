@@ -15,10 +15,7 @@ public:
     int loadFromFile(const std::string &filename);
     void applyDijkstra(const std::string &start);
     void writeToFile(const std::string &filename);
-    bool Graph::hasVertex(const std::string &id)
-    {
-        return nodeTable->contains(id);
-    }
+    bool hasVertex(const std::string &id);
 
 private:
     class Node;
